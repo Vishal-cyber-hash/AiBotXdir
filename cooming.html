@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="shortcut icon" href="https://chat.openai.com/favicon.ico" type="image/x-icon">
+    <title>New Chat</title>
+</head>
+
+<body class="bg-chatblack-50">
+    <div class="flex h-[100vh] text-white">
+        <!-- Left Sidebar: Chat List -->
+        <div class="left bg-[#202123] w-2/12 p-4">
+            <!-- New Chat Button -->
+            <button class="w-[90%] py-2 m-2 px-10 space-x-2 border-white border rounded-md flex mx-4 justify-start items-center hover:opacity-70">
+                <span>New Chat</span>
+            </button>
+
+            <!-- Chats List -->
+            <div class="chats flex flex-col justify-center items-center space-y-2 mt-4">
+                {% for chat in myChats %}
+                <div class="chat space-x-2 opacity-80 w-[90%] px-5 py-2 rounded-md bg-gray-600 cursor-pointer flex justify-start items-center" onclick="startChat('{{chat['Question']}}')">
+                    <span>{{chat['Question']}}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Right Main Chat Area -->
+        <div class="right1 w-10/12 flex justify-center items-center flex-col">
+            <!-- Chat Title -->
+            <div class="text-center w-full text-4xl font-bold my-10">
+                Bot<span class="text-red-500">X</span>Dir
+            </div>
+
+            <!-- Input Section -->
+            <div class="input w-full text-center my-24 flex items-center justify-center flex-col">
+                <div class="buttonsvg pl-16 w-[50vw] flex">
+                    <!-- Input field for the user question -->
+                    <input class="w-full p-4 bg-gray-600 rounded-md" placeholder="Send a Message" type="text" name="text" id="questionInput">
+                    <!-- Send Button -->
+                    <button id="sendButton" class="relative -left-20 pl-10" onclick="sendQuestion()">
+                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-1" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to start the chat when clicking on a previous question
+        function startChat(question) {
+            document.getElementById('questionInput').value = question;
+        }
+
+        // Function to send the question to the backend and display the answer
+        function sendQuestion() {
+            var question = document.getElementById('questionInput').value;
+
+            if (!question.trim()) {
+                alert("Please enter a question.");
+                return;
+            }
+
+            // Make AJAX POST request to the Flask API
+            $.ajax({
+                url: '/api',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ question: question }),
+                success: function(response) {
+                    // Display the answer on the page
+                    var answer = response.answer;
+                    console.log('Answer:', answer);
+
+                    // Update the conversation with the question and answer
+                    addMessage(question, 'user');
+                    addMessage(answer, 'bot');
+
+                    // Optionally add the new question and answer to the chats list
+                    var chatHtml = `<div class="chat space-x-2 opacity-80 w-[90%] px-5 py-2 rounded-md bg-gray-600 cursor-pointer flex justify-start items-center" onclick="startChat('${question}')">
+                        <span>${question}</span>
+                    </div>`;
+                    $('.chats').prepend(chatHtml);  // Prepend new chat to the list
+                },
+                error: function() {
+                    alert('Error processing your request.');
+                }
+            });
+        }
+
+        // Function to add messages to the chat window
+        function addMessage(message, sender) {
+            var chatBox = document.querySelector('.chats');
+            var messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+            messageDiv.innerHTML = `<span>${message}</span>`;
+            chatBox.appendChild(messageDiv);
+        }
+    </script>
+
+    <style>
+        /* Styling for the User and Bot messages */
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+
+        .user-message {
+            background-color: #16a085;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</body>
+
+</html>

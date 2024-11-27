@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1036px" height="404px" viewBox="0 0 1036 404" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Path</title>
+    <defs>
+        <linearGradient x1="0%" y1="42.3966098%" x2="100%" y2="57.6033902%" id="linearGradient-1">
+            <stop stop-color="#3F4447" offset="0%"></stop>
+            <stop stop-color="#000000" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="01-comps-blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M1036,404 L9.09494702e-13,404 C153.733708,201.082307 251.763969,71.9904843 294.090781,16.7245329 C303.153576,4.89161023 312.37846,-0.00991016683 327.651286,0.00276595153 L1036,0.00276595153 L1036,404 Z" id="Path" fill="url(#linearGradient-1)"></path>
+    </g>
+</svg>
